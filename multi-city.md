@@ -59,22 +59,14 @@
   "@type": "ItemList",
   "name": "Orient Exchange Forex Rates",
   "description": "Live foreign exchange rates for multiple cities and currencies across Orient Exchange branches.",
+  "numberOfItems": 10,
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://act.orientexchange.in/forex_rates.php"
+    "@id": "https://orientexchange.in/forex_rates."
   },
   "itemListElement": [
     {
-      "@type": "ExchangeRateSpecification",
-      "@id": "https://act.orientexchange.in/forex_rates.php#Chennai-USD-buy-card",
-      "currency": "USD",
-      "name": "Buy Card",
-      "description": "Buy Card rate for USD in Chennai",
-      "currentExchangeRate": {
-        "@type": "UnitPriceSpecification",
-        "price": "88.26",
-        "priceCurrency": "INR"
-      },
+      "@type": "Offer",
       "validFrom": "2025-08-29T14:30:00+05:30",
       "availableAtOrFrom": {
         "@type": "Place",
@@ -86,10 +78,50 @@
           "addressCountry": "IN"
         },
         "telephone": "+91-44-12345678",
-        "email": "chennai@orientexchange.in",
-        "hasMap": "https://maps.google.com/?q=Orient+Exchange+Chennai"
+        "hasMap": "https://goo.gl/maps/examplechennai"
+      },
+      "itemOffered": {
+        "@type": "ExchangeRateSpecification",
+        "@id": "https://orientexchange.in/forex_rates.#Chennai-USD-buy-card",
+        "currency": "USD",
+        "name": "Buy Card",
+        "description": "Buy Card rate for USD in Chennai",
+        "currentExchangeRate": {
+          "@type": "UnitPriceSpecification",
+          "price": "88.26",
+          "priceCurrency": "INR"
+        }
+      }
+    },
+    {
+      "@type": "Offer",
+      "validFrom": "2025-08-29T14:30:00+05:30",
+      "availableAtOrFrom": {
+        "@type": "Place",
+        "name": "Bangalore Branch",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Bangalore",
+          "addressRegion": "Karnataka",
+          "addressCountry": "IN"
+        },
+        "telephone": "+91-80-98765432",
+        "hasMap": "https://goo.gl/maps/examplebangalore"
+      },
+      "itemOffered": {
+        "@type": "ExchangeRateSpecification",
+        "@id": "https://orientexchange.in/forex_rates.#Bangalore-USD-buy-card",
+        "currency": "USD",
+        "name": "Buy Card",
+        "description": "Buy Card rate for USD in Bangalore",
+        "currentExchangeRate": {
+          "@type": "UnitPriceSpecification",
+          "price": "88.35",
+          "priceCurrency": "INR"
+        }
       }
     }
+    // ... repeat for other rate types and currencies
   ]
 }
 ```
@@ -99,6 +131,7 @@
 ### **3. Multi-City PHP Dynamic JSON-LD Generator**
 
 ```php
+<!-- Multi-City Schema with Offer → ExchangeRateSpecification -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -108,7 +141,7 @@
     "numberOfItems": <?php echo !empty($forexRates) && !empty($cities) ? count($forexRates) * count($cities) * 5 : 0; ?>,
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "<?php echo htmlspecialchars('https://act.orientexchange.in/forex_rates.php', ENT_QUOTES); ?>"
+        "@id": "<?php echo htmlspecialchars('https://orientexchange.in/forex_rates.', ENT_QUOTES); ?>"
     },
     "itemListElement": [
         <?php
@@ -119,7 +152,6 @@
             $cityName = htmlspecialchars($city['name'], ENT_QUOTES);
             $cityRegion = htmlspecialchars($city['region'], ENT_QUOTES);
             $branchPhone = htmlspecialchars($city['phone'], ENT_QUOTES);
-            $branchEmail = htmlspecialchars($city['email'], ENT_QUOTES);
             $branchMap = htmlspecialchars($city['map_url'], ENT_QUOTES);
 
             foreach ($forexRates as $code => $rate) {
@@ -137,16 +169,7 @@
                     if (!empty($value)) {
                         $price = htmlspecialchars($value, ENT_QUOTES);
                         $rateSchemas[] = '{
-                            "@type": "ExchangeRateSpecification",
-                            "@id": "https://act.orientexchange.in/forex_rates.php#' . urlencode($cityName . '-' . $currencyCode . '-' . strtolower(str_replace(" ", "-", $type))) . '",
-                            "currency": "' . $currencyCode . '",
-                            "name": "' . $type . '",
-                            "description": "' . $type . ' rate for ' . $currencyCode . ' in ' . $cityName . '",
-                            "currentExchangeRate": {
-                                "@type": "UnitPriceSpecification",
-                                "price": "' . $price . '",
-                                "priceCurrency": "INR"
-                            },
+                            "@type": "Offer",
                             "validFrom": "' . $now . '",
                             "availableAtOrFrom": {
                                 "@type": "Place",
@@ -158,8 +181,19 @@
                                     "addressCountry": "IN"
                                 },
                                 "telephone": "' . $branchPhone . '",
-                                "email": "' . $branchEmail . '",
                                 "hasMap": "' . $branchMap . '"
+                            },
+                            "itemOffered": {
+                                "@type": "ExchangeRateSpecification",
+                                "@id": "https://orientexchange.in/forex_rates.#' . urlencode($cityName . '-' . $currencyCode . '-' . strtolower(str_replace(" ", "-", $type))) . '",
+                                "currency": "' . $currencyCode . '",
+                                "name": "' . $type . '",
+                                "description": "' . $type . ' rate for ' . $currencyCode . ' in ' . $cityName . '",
+                                "currentExchangeRate": {
+                                    "@type": "UnitPriceSpecification",
+                                    "price": "' . $price . '",
+                                    "priceCurrency": "INR"
+                                }
                             }
                         }';
                     }

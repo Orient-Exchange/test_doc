@@ -139,23 +139,35 @@
 
 ## **Schema.org Microdata Implementation**
 
-```html
-<!-- Add this to your HTML head or before closing body tag -->
-<script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Chennai Forex Exchange Rates",
-    "description": "Complete exchange rates for multiple currencies and rate types in Chennai",
-    "numberOfItems": 15,
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "https://act.orientexchange.in/forex_rates.php"
-    },
-    "itemListElement": [
-      {
+```json
+// Add this to your HTML head or before closing body tag
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Chennai Forex Exchange Rates",
+  "description": "Complete exchange rates for multiple currencies and rate types in Chennai",
+  "numberOfItems": 5,
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://orientexchange.in/forex_rates."
+  },
+  "itemListElement": [
+    {
+      "@type": "Offer",
+      "validFrom": "2025-08-29T14:30:00+05:30",
+      "availableAtOrFrom": {
+        "@type": "Place",
+        "name": "Chennai",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Chennai",
+          "addressRegion": "Tamil Nadu",
+          "addressCountry": "IN"
+        }
+      },
+      "itemOffered": {
         "@type": "ExchangeRateSpecification",
-        "@id": "https://act.orientexchange.in/forex_rates.php#usd-buy-card",
+        "@id": "https://orientexchange.in/forex_rates.#USD-buy-card",
         "currency": "USD",
         "name": "Buy Card",
         "description": "Buy Card rate for USD in Chennai",
@@ -163,28 +175,45 @@
           "@type": "UnitPriceSpecification",
           "price": "88.26",
           "priceCurrency": "INR"
-        },
-        "validFrom": "2025-08-29T14:30:00+05:30",
-        "availableAtOrFrom": {
-          "@type": "Place",
-          "name": "Chennai",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Chennai",
-            "addressRegion": "Tamil Nadu",
-            "addressCountry": "IN"
-          }
         }
       }
-    ]
-  }
-</script>
+    },
+    {
+      "@type": "Offer",
+      "validFrom": "2025-08-29T14:30:00+05:30",
+      "availableAtOrFrom": {
+        "@type": "Place",
+        "name": "Chennai",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Chennai",
+          "addressRegion": "Tamil Nadu",
+          "addressCountry": "IN"
+        }
+      },
+      "itemOffered": {
+        "@type": "ExchangeRateSpecification",
+        "@id": "https://orientexchange.in/forex_rates.#USD-buy-cash",
+        "currency": "USD",
+        "name": "Buy Cash",
+        "description": "Buy Cash rate for USD in Chennai",
+        "currentExchangeRate": {
+          "@type": "UnitPriceSpecification",
+          "price": "88.78",
+          "priceCurrency": "INR"
+        }
+      }
+    }
+    // ... repeat for Sell Card, Sell Cash, Wire Transfer
+  ]
+}
 ```
 
 ## **PHP Dynamic JSON-LD Generation**
 
 ```php
 <!-- Comprehensive Exchange Rate Schema for Each Currency and Rate Type -->
+<!-- Single-City Schema with Offer → ExchangeRateSpecification -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -194,7 +223,7 @@
     "numberOfItems": <?php echo !empty($forexRates) ? count($forexRates) * 5 : 0; ?>,
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "<?php echo htmlspecialchars('https://act.orientexchange.in/forex_rates.php', ENT_QUOTES); ?>"
+        "@id": "<?php echo htmlspecialchars('https://orientexchange.in/forex_rates.', ENT_QUOTES); ?>"
     },
     "itemListElement": [
         <?php
@@ -216,16 +245,7 @@
                 if (!empty($value)) {
                     $price = htmlspecialchars($value, ENT_QUOTES);
                     $rateSchemas[] = '{
-                        "@type": "ExchangeRateSpecification",
-                        "@id": "https://act.orientexchange.in/forex_rates.php#' . urlencode($currencyCode . '-' . strtolower(str_replace(" ", "-", $type))) . '",
-                        "currency": "' . $currencyCode . '",
-                        "name": "' . $type . '",
-                        "description": "' . $type . ' rate for ' . $currencyCode . ' in Chennai",
-                        "currentExchangeRate": {
-                            "@type": "UnitPriceSpecification",
-                            "price": "' . $price . '",
-                            "priceCurrency": "INR"
-                        },
+                        "@type": "Offer",
                         "validFrom": "' . $now . '",
                         "availableAtOrFrom": {
                             "@type": "Place",
@@ -235,6 +255,18 @@
                                 "addressLocality": "Chennai",
                                 "addressRegion": "Tamil Nadu",
                                 "addressCountry": "IN"
+                            }
+                        },
+                        "itemOffered": {
+                            "@type": "ExchangeRateSpecification",
+                            "@id": "https://orientexchange.in/forex_rates.#' . urlencode($currencyCode . '-' . strtolower(str_replace(" ", "-", $type))) . '",
+                            "currency": "' . $currencyCode . '",
+                            "name": "' . $type . '",
+                            "description": "' . $type . ' rate for ' . $currencyCode . ' in Chennai",
+                            "currentExchangeRate": {
+                                "@type": "UnitPriceSpecification",
+                                "price": "' . $price . '",
+                                "priceCurrency": "INR"
                             }
                         }
                     }';
