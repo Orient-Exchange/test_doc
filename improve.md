@@ -31,6 +31,7 @@
 ```html
 <table
   class="table text-center liverates-table"
+  aria-label="Live Forex Rates for Chennai"
   data-last-updated="2025-08-29T14:30:00+05:30"
   data-location="Bangalore"
   data-timezone="Asia/Kolkata"
@@ -81,6 +82,7 @@
 ```html
 <table
   class="table text-center liverates-table"
+  aria-label="Live Forex Rates for Chennai"
   data-last-updated="2025-08-29T14:30:00+05:30"
   data-location="Bangalore"
   data-timezone="Asia/Kolkata"

@@ -5,6 +5,7 @@
 ```html
 <div class="table-responsive">
   <table
+    aria-label="Live Forex Rates"
     class="table text-center liverates-table"
     data-last-updated="2025-08-29T14:30:00+05:30"
     data-timezone="Asia/Kolkata"
